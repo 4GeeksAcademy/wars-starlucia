@@ -4,6 +4,8 @@ import ScrollToTop from "./component/scrollToTop";
 
 import { Home } from "./views/home";
 import { Demo } from "./views/demo";
+import { Login } from "./views/login";
+import { Sign_up } from "./views/sign";
 import { Details } from "./views/Details";
 import { Single } from "./views/single";
 import injectContext from "./store/appContext";
@@ -28,6 +30,8 @@ const Layout = () => {
 						<Route path="/details/characters/:id" element={<Details />} />
 						<Route path="/details/planets/:id" element={<Details />} />
 						<Route path="/details/vehicles/:id" element={<Details />} />
+						<Route path="/login" element={<Login />} />
+						<Route path="/sign" element={<Sign_up />} />
 						<Route path="*" element={<h1>Not found!</h1>} />
 					</Routes>
 					<Footer />

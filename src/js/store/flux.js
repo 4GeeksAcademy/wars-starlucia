@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -16,7 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			], 
+			],
 
 			characters: []
 			,
@@ -29,6 +31,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
+
+			login: async () => {
+				try {
+					let data = await axios.post("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/login", {
+						"email": "raul@gmail.com",
+						"password": "12345"
+					})
+					console.log(data);
+					return true;
+
+				}
+				catch (error) {
+					console.log(error);
+					return false;
+				}
+			},
+
 			obtenerVehiculosClaudia: async () => {
 				/**
 					fetch().then().then(data => setStore({ "foo": data.bar }))
@@ -57,11 +76,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					let response = await fetch("https://swapi.dev/api/people"); //especificamos la url donde vamos a buscar info
 					let data = await response.json()
 					console.log(data);
-					setStore({characters: data.results})
-					
+					setStore({ characters: data.results })
+
 				} catch (error) {
 					console.log(error)
-					
+
 				}
 			},
 			obtenerplanetas: async function () {
@@ -77,18 +96,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			agregarFavorito: (name) => {
-				
-			
+
+
 				setStore({ favoritos: [...getStore().favoritos, name] });
-								
-					
-			
+
+
+
 			},
-			eliminarFavorito:(name)=>{
-				const arr= getStore().favoritos.filter((name2)=>
-				name2!==name)
-				setStore({ favoritos: arr});
-				
+			eliminarFavorito: (name) => {
+				const arr = getStore().favoritos.filter((name2) =>
+					name2 !== name)
+				setStore({ favoritos: arr });
+
 			},
 			getDetails: async (type, id) => {
 				/**
