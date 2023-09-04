@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -32,21 +31,45 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 
-			login: async () => {
+			login: async (email, password) => {
 				try {
-					let data = await axios.post("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/login", {
-						"email": "raul@gmail.com",
-						"password": "12345"
+					let data = await axios.post("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/login", {//en esta parte apunta a la url del back, es donde conecto el front y el back, es donde lo uno con mi 
+						//api que seria el back
+						"email": email,
+						"password": password
 					})
 					console.log(data);
+					//esto es para guardar el token en el navegador
+					localStorage.setItem("token", data.data.access_token
+					);
 					return true;
 
 				}
 				catch (error) {
-					console.log(error);
-					return false;
+
+					if (error.response.status === 401) {
+						alert("usuario no registrado")
+					}
 				}
 			},
+
+
+			// obtenerFavoritos: async () => {
+			// 	let token = localStorage.getItem("token")
+			// 	try {
+			// 		let data = await axios.get("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/user/fav",
+			// 			{ headers: { 'Authorization': 'Bearer ' + token } })//en esta parte apunta a la url del back, es donde conecto el front y el back, es donde lo uno con mi 
+			// 		//api que seria el back
+			// 		console.log(data)
+			// 		return true
+			// 	}
+			// 	catch (error) {
+			// 		console.log(error)
+			// 		return false;
+			// 		// e.status == 401)
+			// 		// 	alert("usuario no registrado")
+			// 	}
+			// },
 
 			obtenerVehiculosClaudia: async () => {
 				/**
@@ -67,6 +90,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
+
+
 			obtenerPersonajes: async () => {
 				/**
 					fetch().then().then(data => setStore({ "foo": data.bar }))

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
@@ -9,11 +10,14 @@ export const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
-    function handleSubmit(e) {
-        e.preventDefault(),
-            console.log(email, password),
-            actions.login()
+    async function handleSubmit(e) {
+        e.preventDefault();
+        let logged = await actions.login(email, password)
+        if (logged == true) {
+            navigate("/demo")//permite redireccionar
+        }
     }
 
     return (
