@@ -16,7 +16,7 @@ export const Login = () => {
         e.preventDefault();
         let logged = await actions.login(email, password)
         if (logged == true) {
-            navigate("/demo")//permite redireccionar
+            navigate("/")//permite redireccionar
         }
     }
 

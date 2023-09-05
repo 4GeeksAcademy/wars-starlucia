@@ -19,10 +19,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			],
 
-			characters: []
-			,
+			characters: [],
 
-			vehiculos: []
+			vehiculos: [],
+			auth: false //creo un estado para llamarlo en otro momento
 
 		},
 		actions: {
@@ -38,10 +38,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						"email": email,
 						"password": password
 					})
-					console.log(data);
 					//esto es para guardar el token en el navegador
-					localStorage.setItem("token", data.data.access_token
-					);
+					localStorage.setItem("token", data.data.access_token),
+						setStore({ auth: true })
+
 					return true;
 
 				}
@@ -53,23 +53,72 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			singup: async (email, password) => {
+				try {
+					let data = await axios.post("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/sign", {//en esta parte apunta a la url del back, es donde conecto el front y el back, es donde lo uno con mi 
+						//api que seria el back
+						"email": email,
+						"password": password
+					})
+					//esto es para guardar el token en el navegador
+					return true;
 
-			// obtenerFavoritos: async () => {
-			// 	let token = localStorage.getItem("token")
-			// 	try {
-			// 		let data = await axios.get("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/user/fav",
-			// 			{ headers: { 'Authorization': 'Bearer ' + token } })//en esta parte apunta a la url del back, es donde conecto el front y el back, es donde lo uno con mi 
-			// 		//api que seria el back
-			// 		console.log(data)
-			// 		return true
-			// 	}
-			// 	catch (error) {
-			// 		console.log(error)
-			// 		return false;
-			// 		// e.status == 401)
-			// 		// 	alert("usuario no registrado")
-			// 	}
-			// },
+				}
+				catch (error) {
+					console.log(error)
+					// if (error.response.status === 401) {
+					// 	alert("usuario no registrado")
+				}
+			},
+
+
+
+			obtenerFavoritos: async () => {
+				//se pide al navegador que nos de el token
+				let token = localStorage.getItem("token")
+				try {
+					let data = await axios.get("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/user/fav",
+						{ headers: { 'Authorization': 'Bearer ' + token } })//en esta parte apunta a la url del back, es donde conecto el front y el back, es donde lo uno con mi 
+					//api que seria el back
+					console.log(data.data.results)
+					//le digo que convierta esa respuesta en un jason y lo guardo en un espacio de memoira y que espere por la convercion de esa respuesta
+					setStore({ favoritos: data.data.results });
+					return true
+				}
+				catch (error) {
+					console.log(error)
+
+					if (error.response.status > 401)
+						alert("datos incorrecto")
+					return false;
+				}
+			},
+
+			validToken: async () => {
+				//se pide al navegador que nos de el token
+				let token = localStorage.getItem("token")
+				try {
+					let data = await axios.get("https://super-duper-adventure-69ggr54rgpxxf569-3000.app.github.dev/valid-token",
+						{ headers: { 'Authorization': 'Bearer ' + token } })//en esta parte apunta a la url del back, es donde conecto el front y el back, es donde lo uno con mi 
+					//api que seria el back
+					setStore({ auth: true })
+					return true
+				}
+				catch (error) {
+					console.log(error)
+					if (error.response.status === 401) {
+						setStore({ auth: false })
+						alert(error.response.data.msg)
+					}
+					return false;
+				}
+			},
+
+
+			logout: async () => {
+				localStorage.removeItem("token")
+				setStore({ auth: false })
+			},
 
 			obtenerVehiculosClaudia: async () => {
 				/**
@@ -81,7 +130,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 
 					let data = await response.json();
-					console.log(data.results);
 					setStore({ vehiculos: data.results });
 
 
@@ -100,7 +148,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch("https://swapi.dev/api/people"); //especificamos la url donde vamos a buscar info
 					let data = await response.json()
-					console.log(data);
 					setStore({ characters: data.results })
 
 				} catch (error) {
@@ -114,7 +161,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					let response = await fetch("https://swapi.dev/api/planets"); //esto me regresa una respuesta, que la guerdo en un espacio de memoira
 					//le digo que espere por esa respuesta
 					let data = await response.json(); //le digo que convierta esa respuesta en un jason y lo guardo en un espacio de memoira y que espere por la convercion de esa respuesta
-					console.log(data);
 					setStore({ Planets: data.results }); //({propiedad:el valor que quiero actuaizar})
 				} catch (error) {
 					console.log(error);
@@ -167,8 +213,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ demo: demo });
 			}
 		}
-	};
-};
+	}
+}
 
 export default getState;
 
